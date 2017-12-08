@@ -1,3 +1,4 @@
+import chalk from 'chalk'
 import readline from 'readline'
 
 import Grid from './js/Grid'
@@ -50,14 +51,22 @@ function playGame(grid) {
 }
 
 function displayGrid({ grid, reveal = false }) {
-  grid.matrix.forEach((row) => {
-    const display = row.map((c) => {
-      if ( c.isOpen || reveal ) {
-        return ( c.hasMine ) ? ' ! ' : ' _ '
+  const makeRowDisplay = (row) => {
+    return row.map((c) => {
+      if ( reveal && c.hasMine ) {
+        return chalk.red.bold(' ! ')
       }
 
-      return ' ? '
+      if ( c.isOpen ) {
+        return '   '
+      }
+
+      return chalk.bgRgb(200, 200, 200)(' ? ')
     })
-    console.log(display.join(''))
+  }
+
+  grid.matrix.forEach((row) => {
+    const rowDisplay = makeRowDisplay(row)
+    console.log(rowDisplay.join(''))
   })
 }
