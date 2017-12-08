@@ -17,16 +17,24 @@ export default class Grid {
       numMines,
     })
   }
+
+  select({ row, col }) {
+    const selected = this.matrix[row][col]
+
+    selected.open()
+
+    return selected
+  }
 }
 
 function buildMatrix({ rows, cols, numMines }) {
-  const matrix = []
-
   const minePositions = generateMinePositions({
     numCells: rows * cols,
     numMines,
   })
   
+  const matrix = []
+
   let mineNum = 0
   for ( let rowIdx = 0; rowIdx < rows; ++rowIdx ) {
     const row = []
