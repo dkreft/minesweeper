@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import readline from 'readline'
 
-import Grid from './js/Grid'
+import Grid from './src/grid'
 
 // Send to Kyle Kennaw <kyle.kennaw@faithlife.com>
 
@@ -23,7 +23,7 @@ function playGame(grid) {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-  });
+  })
 
   rl.setPrompt('Enter coordinates of cell to uncover: (row col) ')
   rl.prompt()
@@ -58,7 +58,7 @@ function displayGrid({ grid, reveal = false }) {
       }
 
       if ( c.isOpen ) {
-        return '   '
+        return ( c.minedNeighborCount > 0 ) ? ` ${ c.minedNeighborCount } ` : '   '
       }
 
       return chalk.bgRgb(200, 200, 200)(' ? ')

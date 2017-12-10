@@ -1,0 +1,3 @@
+--compilers js:babel-register
+--ui bdd-lazy-var/rspec
+--recursive
