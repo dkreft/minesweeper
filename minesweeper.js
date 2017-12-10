@@ -29,16 +29,16 @@ function playGame(grid) {
   rl.prompt()
 
   rl.on('line', (answer) => {
-    const [row, col] = answer.split(/\s+/)
+    const [row, col] = answer.split(/\s+/).map(Number)
 
     const cell = grid.select({
-      row: Number(row),
-      col: Number(col),
+      row,
+      col,
     })
 
     displayGrid({ grid })
 
-    if ( cell.hasMine ) {
+    if ( cell && cell.hasMine ) {
       console.log('----- BOOOM ------')
       displayGrid({ grid, reveal: true })
       rl.close()

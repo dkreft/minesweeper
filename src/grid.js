@@ -19,9 +19,15 @@ export default class Grid {
   }
 
   select({ col, row }) {
+    if ( !this.matrix[row] || !this.matrix[row][col] ) {
+      return
+    }
+
     const selected = this.matrix[row][col]
 
-    selected.open()
+    if ( selected ) {
+      selected.open()
+    }
 
     return selected
   }
