@@ -39,7 +39,7 @@ function playGame(grid) {
     displayGrid({ grid })
 
     if ( cell && cell.hasMine ) {
-      console.log('----- BOOOM ------')
+      console.log(chalk.bold('\n----- BOOOM ------\n'))
       displayGrid({ grid, reveal: true })
       rl.close()
 
