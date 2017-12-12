@@ -3,10 +3,16 @@ import readline from 'readline'
 
 import Grid from './src/grid'
 
-// Send to Kyle Kennaw <kyle.kennaw@faithlife.com>
+const DEFAULT_NUM_ROWS = 8
+const DEFAULT_NUM_COLS = 8
+const DEFAULT_NUM_MINES = 5
 
 MAIN: {
-  const [rows = 10, cols = 10, numMines = 5] = process.argv.slice(2)
+  const [
+    rows = DEFAULT_NUM_ROWS,
+    cols = DEFAULT_NUM_COLS,
+    numMines = DEFAULT_NUM_MINES,
+  ] = process.argv.slice(2)
 
   const grid = new Grid({
     rows: Number(rows),
@@ -17,6 +23,9 @@ MAIN: {
   playGame(grid)
 }
 
+/*
+ * @param {Grid}
+ */
 function playGame(grid) {
   displayGrid({ grid })
 
@@ -25,16 +34,13 @@ function playGame(grid) {
     output: process.stdout,
   })
 
-  rl.setPrompt('Enter coordinates of cell to uncover: (row col) ')
+  rl.setPrompt('Enter coordinates [top left is `0 0` (row col)]: ')
   rl.prompt()
 
   rl.on('line', (answer) => {
-    const [row, col] = answer.split(/\s+/).map(Number)
+    const [col, row] = answer.split(/\s+/).map(Number)
 
-    const cell = grid.select({
-      row,
-      col,
-    })
+    const cell = grid.select({ row, col })
 
     displayGrid({ grid })
 
@@ -50,23 +56,39 @@ function playGame(grid) {
   })
 }
 
+/*
+ * Renders a colored ASCII grid to stdout that reflects the state
+ * of the supplied Grid instance.
+ *
+ * @param {Object} args
+ * @param {Grid} grid
+ * @param {Boolean} [reveal=false] - reveals all mines when true
+ */
 function displayGrid({ grid, reveal = false }) {
-  const makeRowDisplay = (row) => {
-    return row.map((c) => {
-      if ( reveal && c.hasMine ) {
-        return chalk.red.bold(' ! ')
-      }
-
-      if ( c.isOpen ) {
-        return ( c.minedNeighborCount > 0 ) ? ` ${ c.minedNeighborCount } ` : '   '
-      }
-
-      return chalk.bgRgb(200, 200, 200)(' ? ')
-    })
-  }
-
-  grid.matrix.forEach((row) => {
-    const rowDisplay = makeRowDisplay(row)
-    console.log(rowDisplay.join(''))
+  grid.visitRows((row) => {
+    console.log(renderRow({ row, reveal })
   })
+}
+
+/*
+ * @param {Object} args
+ * @param {Cell[]} row
+ * @param {Boolean} reveal - expose mines if true
+ *
+ * @returns {String}
+ */
+function renderRow({ row, reveal }) {
+  const rows = row.map((c) => {
+    if ( reveal && c.hasMine ) {
+      return chalk.red.bold(' ! ')
+    }
+
+    if ( c.isOpen ) {
+      return ( c.minedNeighborCount > 0 ) ? ` ${ c.minedNeighborCount } ` : '   '
+    }
+
+    return chalk.bgRgb(200, 200, 200)(' ? ')
+  })
+
+  return rows.join('')
 }
