@@ -108,6 +108,8 @@ function addMinedNeighborCounts(matrix) {
     const prevRow = matrix[rowIdx - 1]
     const nextRow = matrix[rowIdx + 1]
 
+    // TODO: I'm not thrilled with this implementation...seems like
+    // there's some opportunity to DRY this up here.
     row.forEach((cell, colIdx) => {
       const leftIdx  = colIdx - 1
       const rightIdx = colIdx + 1
@@ -160,12 +162,19 @@ function addMinedNeighborCounts(matrix) {
   return matrix
 }
 
+// TODO: this should be in a lib file so it can be unit tested.
 function generateMinePositions({ numCells, numMines }) {
   const positions = new Set()
 
+  if ( numMines > numCells ) {
+    // TODO: Perhaps a bit obnoxious to throw an error instead of
+    // catching this case way earlier.
+    throw new Error('Number of mines must be less than or equal to the number of cells')
+  }
+
   while ( positions.size < numMines ) {
     const num = makeRandomNumber({
-      max: numCells - 1,
+      max: numCells,
     })
 
     positions.add(num)
@@ -174,6 +183,7 @@ function generateMinePositions({ numCells, numMines }) {
   return positions
 }
 
+// TODO: move to a lib file
 function makeRandomNumber({ min = 1, max }) {
   return Math.floor(Math.random() * max) + min
 }

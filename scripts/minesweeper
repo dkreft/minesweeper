@@ -1,7 +1,9 @@
+// -*- javascript -*-
+
 import chalk from 'chalk'
 import readline from 'readline'
 
-import Grid from './src/grid'
+import Grid from '../src/grid'
 
 const DEFAULT_NUM_ROWS = 8
 const DEFAULT_NUM_COLS = 8
@@ -9,25 +11,26 @@ const DEFAULT_NUM_MINES = 5
 
 MAIN: {
   const [
-    rows = DEFAULT_NUM_ROWS,
     cols = DEFAULT_NUM_COLS,
+    rows = DEFAULT_NUM_ROWS,
     numMines = DEFAULT_NUM_MINES,
-  ] = process.argv.slice(2)
+  ] = process.argv.slice(2).map(Number)
 
   const grid = new Grid({
-    rows: Number(rows),
-    cols: Number(cols),
-    numMines: Number(numMines),
+    rows,
+    cols,
+    numMines,
   })
 
   playGame(grid)
 }
 
+
 /*
  * @param {Grid}
  */
 function playGame(grid) {
-  displayGrid({ grid })
+  renderGrid({ grid })
 
   const rl = readline.createInterface({
     input: process.stdin,
@@ -42,14 +45,18 @@ function playGame(grid) {
 
     const cell = grid.select({ row, col })
 
-    displayGrid({ grid })
+    if ( cell ) {
+      if ( cell.hasMine ) {
+        console.log(chalk.bold('\n----- BOOOM ------\n'))
+        renderGrid({ grid, reveal: true })
+        rl.close()
 
-    if ( cell && cell.hasMine ) {
-      console.log(chalk.bold('\n----- BOOOM ------\n'))
-      displayGrid({ grid, reveal: true })
-      rl.close()
+        return
+      }
 
-      return
+      renderGrid({ grid })
+    } else {
+      console.error(`No cell found at (${ col }, ${ row })`)
     }
 
     rl.prompt()
@@ -64,9 +71,9 @@ function playGame(grid) {
  * @param {Grid} grid
  * @param {Boolean} [reveal=false] - reveals all mines when true
  */
-function displayGrid({ grid, reveal = false }) {
+function renderGrid({ grid, reveal = false }) {
   grid.visitRows((row) => {
-    console.log(renderRow({ row, reveal })
+    console.log(renderRow({ row, reveal }))
   })
 }
 
