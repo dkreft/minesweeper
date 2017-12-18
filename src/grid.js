@@ -17,6 +17,9 @@ export default class Grid {
     numMines = DEFAULT_NUM_MINES,
   })
   {
+    this.numRows = rows
+    this.numCols = cols
+
     this.matrix = buildMatrix({
       rows,
       cols,
@@ -45,7 +48,15 @@ export default class Grid {
       selected.open()
     }
 
+    if ( !selected.hasMine && !selected.hasMinedNeighbor ) {
+      openUnminedNeighbors.call(this, row, col)
+    }
+
     return selected
+  }
+
+  getCell({ row, col }) {
+    return this.matrix[row][col]
   }
 
   /**
@@ -186,4 +197,40 @@ function generateMinePositions({ numCells, numMines }) {
 // TODO: move to a lib file
 function makeRandomNumber({ min = 1, max }) {
   return Math.floor(Math.random() * max) + min
+}
+
+/*
+ * @this {Grid}
+ */
+function openUnminedNeighbors(row, col) {
+  const startRow = Math.max(0, row - 1)
+  const endRow = Math.min(row + 1, this.numRows - 1)
+
+  const startCol = Math.max(0, col - 1)
+  const endCol   = Math.min(col + 1, this.numCols - 1)
+
+  for ( let r = startRow; r <= endRow; ++r ) {
+    for ( let c = startCol; c <= endCol; ++c ) {
+      const neighbor = this.getCell({
+        row: r,
+        col: c,
+      })
+
+      if ( neighbor.isOpen ) {
+        continue
+      }
+
+      if ( neighbor.hasMine ) {
+        break
+      }
+
+      neighbor.open()
+
+      if ( neighbor.hasMinedNeighbor ) {
+        continue
+      }
+
+      openUnminedNeighbors.call(this, r, c)
+    }
+  }
 }

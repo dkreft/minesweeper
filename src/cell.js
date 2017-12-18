@@ -28,6 +28,10 @@ export default class Cell {
     return this._hasMine
   }
 
+  get hasMinedNeighbor() {
+    return Boolean(this.minedNeighborCount)
+  }
+
   /**
    * @type {Number} the number of adjacent cells that have mines
    */

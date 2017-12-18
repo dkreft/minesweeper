@@ -20,6 +20,16 @@ $ # 3 colums, 4 rows, 2 mines
 $ npm start -- 3 4 2
 ```
 
+### Cheat mode
+
+Exposes all bombs from the start (intended for debugging and
+development)
+
+```
+$ export CHEAT=true
+$ npm start
+```
+
 ## Tests
 
 ```
@@ -28,9 +38,9 @@ $ npm test
 
 ## TODO
 
-* When selecting a cell that has neither a mine nor a neighbor with a mine, expose all adjacent cells that have no mines.
 * Add support for flagging a cell to mark it as having a bomb
 * Add jsdoc parser to produce public API documentation
+* Put 0,0 cell at bottom left, having it in the top left is too confusing
 
 ## Author
 

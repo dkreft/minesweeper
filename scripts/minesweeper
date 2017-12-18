@@ -9,6 +9,8 @@ const DEFAULT_NUM_ROWS = 8
 const DEFAULT_NUM_COLS = 8
 const DEFAULT_NUM_MINES = 5
 
+const CHEAT = Boolean(process.env.CHEAT)
+
 MAIN: {
   const [
     cols = DEFAULT_NUM_COLS,
@@ -30,14 +32,14 @@ MAIN: {
  * @param {Grid}
  */
 function playGame(grid) {
-  renderGrid({ grid })
+  renderGrid({ grid, reveal: CHEAT })
 
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   })
 
-  rl.setPrompt('Enter coordinates [top left is `0 0` (row col)]: ')
+  rl.setPrompt('Enter coordinates [top left is `0 0` (x y)]: ')
   rl.prompt()
 
   rl.on('line', (answer) => {
@@ -54,7 +56,7 @@ function playGame(grid) {
         return
       }
 
-      renderGrid({ grid })
+      renderGrid({ grid, reveal: CHEAT })
     } else {
       console.error(`No cell found at (${ col }, ${ row })`)
     }
