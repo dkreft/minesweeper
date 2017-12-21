@@ -40,7 +40,6 @@ $ npm test
 
 * Add support for flagging a cell to mark it as having a bomb
 * Add jsdoc parser to produce public API documentation
-* Put 0,0 cell at bottom left, having it in the top left is too confusing
 
 ## Author
 

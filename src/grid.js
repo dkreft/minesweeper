@@ -20,6 +20,8 @@ export default class Grid {
     this.numRows = rows
     this.numCols = cols
 
+    this.numSafeCellsRemaining = (rows * cols) - numMines
+
     this.matrix = buildMatrix({
       rows,
       cols,
@@ -45,10 +47,11 @@ export default class Grid {
 
     if ( selected ) {
       selected.open()
+      --this.numSafeCellsRemaining
     }
 
     if ( !selected.hasMine && !selected.hasMinedNeighbor ) {
-      openUnminedNeighbors.call(this, (this.numRows - 1 - row), col)
+      openUnminedNeighbors.call(this, row, col)
     }
 
     return selected
@@ -65,6 +68,10 @@ export default class Grid {
    * @returns {Cell|undefined}
    */
   getCell({ row, col }) {
+    if ( row >= this.numRows ) {
+      return
+    }
+
     // Naturally, the 0,0 cell is in the top-left corner, but I
     // want it to be in the bottom left
     const rowFromBottom = (this.numRows - 1) - row
@@ -195,19 +202,22 @@ function generateMinePositions({ numCells, numMines }) {
     throw new Error('Number of mines must be less than or equal to the number of cells')
   }
 
-  while ( positions.size < numMines ) {
-    const num = makeRandomNumber({
-      max: numCells,
-    })
-
+  while ( positions.size !== numMines ) {
+    const num = makeRandomNumber({ max: numCells })
     positions.add(num)
   }
 
   return positions
 }
 
+/* Generates a random integer between [min, max)
+ *
+ * @param {Object} args
+ * @param {Number} [min=0]
+ * @param {Number} max
+ */
 // TODO: move to a lib file
-function makeRandomNumber({ min = 1, max }) {
+function makeRandomNumber({ min = 0, max }) {
   return Math.floor(Math.random() * max) + min
 }
 
@@ -238,6 +248,7 @@ function openUnminedNeighbors(row, col) {
       }
 
       neighbor.open()
+      --this.numSafeCellsRemaining
 
       if ( neighbor.hasMinedNeighbor ) {
         continue

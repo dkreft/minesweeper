@@ -56,6 +56,14 @@ function playGame(grid) {
         return
       }
 
+      if ( !grid.numSafeCellsRemaining ) {
+        console.log(chalk.bold('\n **** WIN ****\n'))
+        renderGrid({ grid })
+        rl.close()
+
+        return
+      }
+
       renderGrid({ grid, reveal: CHEAT })
     } else {
       console.error(`No cell found at (${ col }, ${ row })`)
