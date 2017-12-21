@@ -38,25 +38,37 @@ export default class Grid {
    *   there is no cell corresponding to the given coordinates
    */
   select({ row, col }) {
-    if ( !this.matrix[row] || !this.matrix[row][col] ) {
+    const selected = this.getCell({ row, col })
+    if ( !selected ) {
       return
     }
-
-    const selected = this.matrix[row][col]
 
     if ( selected ) {
       selected.open()
     }
 
     if ( !selected.hasMine && !selected.hasMinedNeighbor ) {
-      openUnminedNeighbors.call(this, row, col)
+      openUnminedNeighbors.call(this, (this.numRows - 1 - row), col)
     }
 
     return selected
   }
 
+  /**
+   * Retrieves a cell at the given coordinates, where (0, 0)
+   * is at the bottom left.
+   *
+   * @param {Object} args
+   * @param {Number} args.row - zero-based row
+   * @param {Number} args.col - zero-based col
+   *
+   * @returns {Cell|undefined}
+   */
   getCell({ row, col }) {
-    return this.matrix[row][col]
+    // Naturally, the 0,0 cell is in the top-left corner, but I
+    // want it to be in the bottom left
+    const rowFromBottom = (this.numRows - 1) - row
+    return this.matrix[rowFromBottom][col]
   }
 
   /**
@@ -202,6 +214,7 @@ function makeRandomNumber({ min = 1, max }) {
 /*
  * @this {Grid}
  */
+// TODO: reverse iteration?
 function openUnminedNeighbors(row, col) {
   const startRow = Math.max(0, row - 1)
   const endRow = Math.min(row + 1, this.numRows - 1)

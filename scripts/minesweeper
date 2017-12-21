@@ -39,7 +39,7 @@ function playGame(grid) {
     output: process.stdout,
   })
 
-  rl.setPrompt('Enter coordinates [top left is `0 0` (x y)]: ')
+  rl.setPrompt('Enter coordinates [bottom left is `0 0` (x y)]: ')
   rl.prompt()
 
   rl.on('line', (answer) => {
