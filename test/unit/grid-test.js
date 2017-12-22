@@ -6,6 +6,7 @@ import {
 
 const Grid = _require('grid')
 const Cell = _require('cell')
+const GridUtils = _require('lib/grid-utils')
 
 describe('Grid', () => {
   def('sandbox', () => sinon.sandbox.create())
@@ -19,6 +20,58 @@ describe('Grid', () => {
   def('numMines', () => void 0)
 
   afterEach(() => $sandbox.restore())
+
+  describe('.constructor()', () => {
+    const minePositions = new Set([5, 10, 12, 35])
+
+    def('rows', () => 5)
+    def('cols', () => 7)
+    def('numMines', () => minePositions.size)
+
+    beforeEach(() => {
+      $sandbox.stub(GridUtils, 'generateMinePositions')
+        .returns(minePositions)
+
+      $model
+    })
+
+    it('invokes GridUtils.generateMinePositions() with the right args', () => {
+      expect(GridUtils.generateMinePositions).to.have.been.calledWith({
+        numCells: $rows * $cols,
+        numMines: $numMines,
+      })
+    })
+
+    it('has the right number of rows', () => {
+      expect($model.matrix).to.have.length($rows)
+    })
+
+    it('has the right number of cells in each row', () => {
+      // chai-things failed to do the right thing on $model.matrix...
+      // it was counting the rows, too, not just the cells in each
+      // row.
+      $model.matrix.forEach((r) => {
+        expect(r).to.have.length($cols)
+      })
+    })
+
+
+    it('mines each of the cells listed in the Set of mine positions', () => {
+      let cellIdx = 0
+      $model.matrix.forEach((row) => {
+        row.forEach((cell) => {
+          const expectedToBeMined = minePositions.has(cellIdx)
+
+          const err = `cell ${ cellIdx } had unexpected value for .hasMine: `
+            + expectedToBeMined
+
+          expect(cell.hasMine).to.equal(expectedToBeMined, err)
+
+          ++cellIdx
+        })
+      })
+    })
+  })
 
   describe('.select()', () => {
     def('col', () => void 0)

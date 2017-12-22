@@ -1,3 +1,5 @@
+import { generateMinePositions } from './lib/grid-utils'
+
 import Cell from './cell'
 
 const DEFAULT_NUM_MINES = 10
@@ -191,43 +193,6 @@ function addMinedNeighborCounts(matrix) {
   })
 
   return matrix
-}
-
-/*
- * @param {Object} args
- * @param {Number} args.numCells
- * @param {Number} args.numMines
- *
- * @returns {Set} containing the indices of the cells that should
- *   be mined
- */
-// TODO: this should be in a lib file so it can be unit tested.
-function generateMinePositions({ numCells, numMines }) {
-  const positions = new Set()
-
-  if ( numMines > numCells ) {
-    // TODO: Perhaps a bit obnoxious to throw an error instead of
-    // catching this case way earlier.
-    throw new Error('Number of mines must be less than or equal to the number of cells')
-  }
-
-  while ( positions.size !== numMines ) {
-    const num = makeRandomNumber({ max: numCells })
-    positions.add(num)
-  }
-
-  return positions
-}
-
-/* Generates a random integer between [min, max)
- *
- * @param {Object} args
- * @param {Number} [min=0]
- * @param {Number} max
- */
-// TODO: move to a lib file
-function makeRandomNumber({ min = 0, max }) {
-  return Math.floor(Math.random() * max) + min
 }
 
 /*
