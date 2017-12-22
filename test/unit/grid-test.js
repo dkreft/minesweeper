@@ -23,6 +23,7 @@ describe('Grid', () => {
   describe('.select()', () => {
     def('col', () => void 0)
     def('row', () => void 0)
+    def('foundCell', () => void 0)
 
     subject(() => $model.select({
       col: $col,
@@ -30,48 +31,111 @@ describe('Grid', () => {
     }))
 
     beforeEach(() => {
-      $sandbox.stub(Cell.prototype, 'open')
+      $sandbox.stub($model, 'getCell').returns($foundCell)
     })
 
-    context('when the row is out of bounds', () => {
-      def('row', () => 100000)
-
-      context('when the col is in bounds', () => {
-        def('col', () => 1)
-
-        selectIsANoOp()
-      })
-
-      context('when the col is out of bounds', () => {
-        def('col', () => 9283473)
-
-        selectIsANoOp()
+    it('invokes #getCell() with the correct arguments', () => {
+      $subject
+      expect($model.getCell).to.have.been.calledWith({
+        row: $row,
+        col: $col,
       })
     })
 
-    context('when the row is in bounds', () => {
-      def('row', () => 1)
+    context('when #getCell() returns undefined', () => {
+      def('foundCell', () => void 0)
 
-      context('when the col is in bounds', () => {
-        def('col', () => 1)
-
-        it('returns the Cell at the specified coordinates', () => {
-          // We're cheating a bit here by reaching into the model to
-          // get at the matrix array
-          expect($subject).to.equal($model.matrix[$row][$col])
-        })
-
-        it('invokes #open() on the returned Cell', () => {
-          expect($subject.open).to.have.been.called
-        })
+      beforeEach(() => {
+        $sandbox.stub(Cell.prototype, 'open')
       })
 
-      context('when the col is out of bounds', () => {
-        def('col', () => 9283473)
+      it('returns undefined', () => {
+        expect($subject).to.be.undefined
+      })
 
-        selectIsANoOp()
+      it('does not invoke Cell#open()', () => {
+        $subject
+        expect(Cell.prototype.open).to.not.have.been.called
+      })
+
+      it('does not decrement numSafeCellsRemaining', () => {
+        const beforeValue = $model.numSafeCellsRemaining
+        $subject
+        expect($model.numSafeCellsRemaining).to.equal(beforeValue)
       })
     })
+
+    context('when #getCells() returns a cell', () => {
+      def('foundCell', () => new Cell())
+
+      beforeEach(() => {
+        $sandbox.stub($foundCell, 'open')
+      })
+
+      it('invokes #open() on the returned Cell', () => {
+        $subject
+        expect($foundCell.open).to.have.been.called
+      })
+
+      it('decrements .numSafeCellsRemaining', () => {
+        const beforeValue = $model.numSafeCellsRemaining
+        $subject
+        expect($model.numSafeCellsRemaining).to.equal(beforeValue - 1)
+      })
+
+      // TODO: Figure out a way to test the opening of neighbors. I'm
+      // thinking this would be a lot easier to move that code into a
+      // library so that it can be tested independently.
+      it('returns the found cell', () => {
+        expect($subject).to.equal($foundCell)
+      })
+    })
+  })
+
+  describe('.getCell()', () => {
+    def('row', () => 0)
+    def('col', () => 0)
+
+    subject(() => $model.getCell({
+      row: $row,
+      col: $col,
+    }))
+
+    context('when the row is undefined', () => {
+      def('row', () => void 0)
+
+      it('returns undefined', () => {
+        expect($subject).to.be.undefined
+      })
+    })
+
+    context('when the row is too big', () => {
+      def('row', () => $model.numRows)
+
+      it('returns undefined', () => {
+        expect($subject).to.be.undefined
+      })
+
+    })
+
+    context('when the col is undefined', () => {
+      def('col', () => void 0)
+
+      it('returns undefined', () => {
+        expect($subject).to.be.undefined
+      })
+    })
+
+    context('when the col is too big', () => {
+      def('col', () => $model.numCols)
+
+      it('returns undefined', () => {
+        expect($subject).to.be.undefined
+      })
+
+    })
+
+
   })
 
   describe('.visitRows()', () => {

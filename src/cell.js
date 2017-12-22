@@ -28,6 +28,9 @@ export default class Cell {
     return this._hasMine
   }
 
+  /**
+   * @type {Boolean}
+   */
   get hasMinedNeighbor() {
     return Boolean(this.minedNeighborCount)
   }

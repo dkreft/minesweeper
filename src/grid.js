@@ -45,10 +45,8 @@ export default class Grid {
       return
     }
 
-    if ( selected ) {
-      selected.open()
-      --this.numSafeCellsRemaining
-    }
+    selected.open()
+    --this.numSafeCellsRemaining
 
     if ( !selected.hasMine && !selected.hasMinedNeighbor ) {
       openUnminedNeighbors.call(this, row, col)
@@ -68,14 +66,17 @@ export default class Grid {
    * @returns {Cell|undefined}
    */
   getCell({ row, col }) {
-    if ( row >= this.numRows ) {
+    if ( row == null || row == null || row >= this.numRows ) {
       return
     }
 
     // Naturally, the 0,0 cell is in the top-left corner, but I
     // want it to be in the bottom left
     const rowFromBottom = (this.numRows - 1) - row
-    return this.matrix[rowFromBottom][col]
+
+    const cells = this.matrix[rowFromBottom] || []
+
+    return cells[col]
   }
 
   /**
@@ -192,6 +193,14 @@ function addMinedNeighborCounts(matrix) {
   return matrix
 }
 
+/*
+ * @param {Object} args
+ * @param {Number} args.numCells
+ * @param {Number} args.numMines
+ *
+ * @returns {Set} containing the indices of the cells that should
+ *   be mined
+ */
 // TODO: this should be in a lib file so it can be unit tested.
 function generateMinePositions({ numCells, numMines }) {
   const positions = new Set()
@@ -224,7 +233,7 @@ function makeRandomNumber({ min = 0, max }) {
 /*
  * @this {Grid}
  */
-// TODO: reverse iteration?
+// TODO: Move this into a lib so we can test it?
 function openUnminedNeighbors(row, col) {
   const startRow = Math.max(0, row - 1)
   const endRow = Math.min(row + 1, this.numRows - 1)
