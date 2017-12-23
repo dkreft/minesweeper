@@ -4,7 +4,7 @@
   "description": "Minesweeper game",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node ./scripts/minesweeper",
+    "cli": "babel-node ./scripts/minesweeper",
     "test": "NODE_ENV=test mocha"
   },
   "author": "Dan Kreft <dan@kreft.net>",

@@ -3,21 +3,21 @@ minesweeper
 
 As basic (and as of right now, incomplete) implementation of the game Minesweeper.
 
-## Running Locally
+## Running the CLI
 
 Before executing the command line script, be sure to `npm install`.
 
 ### Default game (8 x 8, 5 mines)
 
 ```
-$ npm start
+$ npm run cli
 ```
 
 ### Custom game
 
 ```
 $ # 3 colums, 4 rows, 2 mines
-$ npm start -- 3 4 2
+$ npm run cli -- 3 4 2
 ```
 
 ### Cheat mode
@@ -27,7 +27,7 @@ development)
 
 ```
 $ export CHEAT=true
-$ npm start
+$ npm run cli
 ```
 
 ## Tests
