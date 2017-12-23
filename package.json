@@ -5,19 +5,32 @@
   "main": "index.js",
   "scripts": {
     "cli": "babel-node ./scripts/minesweeper",
+    "start": "webpack-dev-server",
     "test": "NODE_ENV=test mocha"
   },
   "author": "Dan Kreft <dan@kreft.net>",
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-polyfill": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",
+    "babel-register": "^6.26.0",
     "bdd-lazy-var": "^1.3.1",
     "chai": "^4.1.2",
     "chalk": "^2.3.0",
+    "html-webpack-plugin": "^2.30.1",
+    "html-webpack-template": "^6.1.0",
     "mocha": "^4.0.1",
+    "react-dom": "^16.2.0",
     "sinon": "^4.1.3",
-    "sinon-chai": "^2.14.0"
+    "sinon-chai": "^2.14.0",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.9.7"
+  },
+  "dependencies": {
+    "react": "^16.2.0"
   }
 }
