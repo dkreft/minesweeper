@@ -2,10 +2,10 @@ import {
   _require,
   expect,
   sinon,
-} from '../helper'
+} from '../../helper'
 
-const Grid = _require('grid')
-const Cell = _require('cell')
+const Grid = _require('model/grid')
+const Cell = _require('model/cell')
 const GridUtils = _require('lib/grid-utils')
 
 describe('Grid', () => {

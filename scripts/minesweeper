@@ -3,7 +3,7 @@
 import chalk from 'chalk'
 import readline from 'readline'
 
-import Grid from '../src/grid'
+import Grid from '../src/model/grid'
 
 const DEFAULT_NUM_ROWS = 8
 const DEFAULT_NUM_COLS = 8

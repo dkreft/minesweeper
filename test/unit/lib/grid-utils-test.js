@@ -4,7 +4,7 @@ import {
   sinon,
 } from '../../helper'
 
-const Cell = _require('cell')
+const Cell = _require('model/cell')
 const GridUtils = _require('lib/grid-utils')
 
 describe('GridUtils', () => {

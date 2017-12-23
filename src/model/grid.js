@@ -1,7 +1,7 @@
 import {
   addMinedNeighborCounts,
   generateMinePositions,
-} from './lib/grid-utils'
+} from '../lib/grid-utils'
 
 import Cell from './cell'
 

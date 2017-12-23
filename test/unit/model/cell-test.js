@@ -1,9 +1,9 @@
 import {
   _require,
   expect,
-} from '../helper'
+} from '../../helper'
 
-const Cell = _require('cell')
+const Cell = _require('model/cell')
 
 describe('Cell', () => {
   def('model', () => new Cell())
