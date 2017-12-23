@@ -113,6 +113,8 @@ function buildMatrix({ rows, cols, numMines }) {
 
   let mineNum = 0
   for ( let rowIdx = 0; rowIdx < rows; ++rowIdx ) {
+    // TODO(?): What if, instead of an array of arrays of Cells, I
+    // used just a single flat array of Cells?
     const row = []
 
     for ( let colIdx = 0; colIdx < cols; ++colIdx ) {
