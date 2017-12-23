@@ -28,9 +28,14 @@ describe('Grid', () => {
     def('cols', () => 7)
     def('numMines', () => minePositions.size)
 
+    const addMinedNeighborCountsResult = []
+
     beforeEach(() => {
       $sandbox.stub(GridUtils, 'generateMinePositions')
         .returns(minePositions)
+
+      $sandbox.stub(GridUtils, 'addMinedNeighborCounts')
+        .returns(addMinedNeighborCountsResult)
 
       $model
     })
@@ -42,34 +47,41 @@ describe('Grid', () => {
       })
     })
 
-    it('has the right number of rows', () => {
-      expect($model.matrix).to.have.length($rows)
-    })
+    describe('the matrix passed to GridUtils.addMinedNeighborCounts()', () => {
+      subject(() => GridUtils.addMinedNeighborCounts.firstCall.args[0])
 
-    it('has the right number of cells in each row', () => {
-      // chai-things failed to do the right thing on $model.matrix...
-      // it was counting the rows, too, not just the cells in each
-      // row.
-      $model.matrix.forEach((r) => {
-        expect(r).to.have.length($cols)
+      it('has right right number of rows', () => {
+        expect($subject).to.have.length($rows)
       })
-    })
 
-
-    it('mines each of the cells listed in the Set of mine positions', () => {
-      let cellIdx = 0
-      $model.matrix.forEach((row) => {
-        row.forEach((cell) => {
-          const expectedToBeMined = minePositions.has(cellIdx)
-
-          const err = `cell ${ cellIdx } had unexpected value for .hasMine: `
-            + expectedToBeMined
-
-          expect(cell.hasMine).to.equal(expectedToBeMined, err)
-
-          ++cellIdx
+      it('has the right number of cells in each row', () => {
+        // chai-things failed to do the right thing on $model.matrix...
+        // it was counting the rows, too, not just the cells in each
+        // row.
+        $subject.forEach((r) => {
+          expect(r).to.have.length($cols)
         })
       })
+
+      it('is called with the correct cells already mined', () => {
+        let cellIdx = 0
+        $subject.forEach((row) => {
+          row.forEach((cell) => {
+            const expectedToBeMined = minePositions.has(cellIdx)
+
+            const err = `cell ${ cellIdx } had unexpected value for .hasMine: `
+              + expectedToBeMined
+
+            expect(cell.hasMine).to.equal(expectedToBeMined, err)
+
+            ++cellIdx
+          })
+        })
+      })
+    })
+
+    it('stores the result of GridUtils#addMinedNeighborCounts in `.matrix`', () => {
+      expect($model.matrix).to.equal(addMinedNeighborCountsResult)
     })
   })
 
